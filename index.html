@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FIFA World Cup 2026 - GenAI Smart Stadium Operations Command Center</title>
+  <meta name="description" content="AI-powered command center and operations co-pilot for FIFA World Cup 2026. Real-time crowd predictive intelligence, security overlays, transit monitoring, and fan support.">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+  <!-- Dashboard Main Grid -->
+  <div class="dashboard-container">
+
+    <!-- Header bar (role="banner") -->
+    <header class="header-bar" role="banner">
+      <div class="brand-section">
+        <span class="brand-badge" aria-label="Version tag">GENAI v1.0</span>
+        <h1 class="brand-name">FIFA 2026 Smart Stadium Command</h1>
+      </div>
+
+      <!-- Navigation Tabs (role="tablist") -->
+      <nav role="navigation" aria-label="Main Command Center navigation">
+        <ul class="nav-tabs" role="tablist">
+          <li role="none">
+            <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="ops-panel" id="tab-ops" onclick="switchTab('ops')">
+              🛠️ Command Center
+            </button>
+          </li>
+          <li role="none">
+            <button class="tab-btn" role="tab" aria-selected="false" aria-controls="security-panel" id="tab-security" onclick="switchTab('security')">
+              🛡️ Security HUD
+            </button>
+          </li>
+          <li role="none">
+            <button class="tab-btn" role="tab" aria-selected="false" aria-controls="transit-panel" id="tab-transit" onclick="switchTab('transit')">
+              🌱 Transit & Sustainability
+            </button>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Accessibility & Settings Controls -->
+      <div class="header-controls">
+        <div class="clock-display" aria-live="off" id="live-clock">14:32:10 UTC</div>
+        
+        <!-- Accessibility Toggle -->
+        <button class="a11y-toggle" id="a11y-toggle-btn" aria-label="Toggle high contrast contrast mode" onclick="toggleAccessibilityContrast()">
+          ♿ Contrast Mode
+        </button>
+
+        <!-- Language Selector -->
+        <select id="lang-selector" aria-label="Change dashboard language" onchange="changeDashboardLanguage(this.value)" style="background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 6px; font-weight: 600; cursor: pointer;">
+          <option value="en">English (US)</option>
+          <option value="es">Español (MX)</option>
+          <option value="fr">Français (CA)</option>
+        </select>
+      </div>
+    </header>
+
+    <!-- Main Content Panel (role="main") -->
+    <main class="main-content" id="dashboard-grid" role="main">
+
+      <!-- ================= LEFT COLUMN: STATUS & INCIDENTS ================= -->
+      <aside class="panel-card" aria-label="Stadium Telemetry Overview">
+        <div class="panel-title">
+          <h2 style="font-size: 1.1rem; font-weight: 700;">Live Telemetry</h2>
+          <span style="font-size: 0.75rem; color: var(--accent-green);" aria-label="Operational status">● Active</span>
+        </div>
+        <div class="panel-body">
+          <!-- Main Counters -->
+          <div class="metric-box">
+            <span>Stadium Attendance</span>
+            <div class="metric-val green" id="metric-attendance">64,281</div>
+          </div>
+          <div class="metric-box">
+            <span>Active Incidents</span>
+            <div class="metric-val red" id="metric-incidents">2</div>
+          </div>
+          <div class="metric-box">
+            <span>Avg Queue wait</span>
+            <div class="metric-val amber" id="metric-queue">11m</div>
+          </div>
+
+          <!-- Dynamic Gate Progress Meters -->
+          <h3 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); margin: 15px 0 8px;">Gate Congestion Metrics</h3>
+          <div id="gate-metrics-list">
+            <!-- Populated via JS -->
+          </div>
+
+          <!-- Real-Time Alerts Logs -->
+          <h3 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); margin: 20px 0 8px;">Operational Alerts</h3>
+          <div id="alerts-log-container" aria-live="polite">
+            <!-- Alerts injected dynamically -->
+          </div>
+        </div>
+
+        <!-- Verification Health Checks (Automated Test Panel) -->
+        <div class="health-panel">
+          <div class="health-status-row">
+            <span>System Health Verification</span>
+            <span><span class="status-dot active"></span>OK</span>
+          </div>
+          <div class="health-status-row" style="color: var(--text-muted);">
+            <span>Mock WebSocket Engine</span>
+            <span>Connected</span>
+          </div>
+          <div class="health-status-row" style="color: var(--text-muted);">
+            <span>Client State checks</span>
+            <span>100% Passed</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ================= CENTER COLUMN: DIGITAL TWIN / MAP VIEWPORT ================= -->
+      <section class="map-viewport" aria-label="Digital Twin and Live Video Area">
+        
+        <!-- Toggle Toggles -->
+        <div class="map-controls-overlay">
+          <button class="map-btn active" id="btn-toggle-heat" onclick="toggleMapHeatmap()">Toggle Heatmap</button>
+          <button class="map-btn" id="btn-toggle-labels" onclick="toggleMapLabels()">Toggle Zones</button>
+        </div>
+
+        <!-- Main Map and View Screen -->
+        <div class="map-canvas-container" id="view-canvas-container">
+          <!-- Digital Twin SVG Arena Map -->
+          <svg viewBox="0 0 800 600" class="stadium-svg" id="stadium-digital-twin" aria-label="Stadium interactive structural map layout">
+            <!-- Outermost Outer ring -->
+            <ellipse cx="400" cy="300" rx="360" ry="260" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="8"/>
+            
+            <!-- Stadium Zones/Gates -->
+            <path class="stadium-zone crowd-med" id="zone-gate-a" d="M 400 60 L 520 80 A 300 220 0 0 1 680 220 L 560 250 A 180 130 0 0 0 400 130 Z" aria-label="Zone Gate A: Medium Crowd Density" />
+            <path class="stadium-zone crowd-high" id="zone-gate-b" d="M 560 250 L 680 220 A 300 220 0 0 1 680 380 L 560 350 A 180 130 0 0 0 560 250 Z" aria-label="Zone Gate B: High Crowd Density" />
+            <path class="stadium-zone crowd-low" id="zone-gate-c" d="M 400 470 L 520 450 A 300 220 0 0 0 680 380 L 560 350 A 180 130 0 0 1 400 400 Z" aria-label="Zone Gate C: Low Crowd Density" />
+            <path class="stadium-zone crowd-low" id="zone-gate-d" d="M 400 470 L 280 450 A 300 220 0 0 1 120 380 L 240 350 A 180 130 0 0 0 400 400 Z" aria-label="Zone Gate D: Low Crowd Density" />
+            
+            <path class="stadium-zone crowd-med" id="zone-gate-north" d="M 400 60 L 280 80 A 300 220 0 0 0 120 220 L 240 250 A 180 130 0 0 1 400 130 Z" aria-label="North Gate Zone: Medium Crowd Density" />
+            <path class="stadium-zone crowd-low" id="zone-gate-west" d="M 240 250 L 120 220 A 300 220 0 0 0 120 380 L 240 350 A 180 130 0 0 1 240 250 Z" aria-label="West Concourse Zone: Low Crowd Density" />
+
+            <!-- Core Playing Pitch -->
+            <rect x="290" y="210" width="220" height="180" rx="10" class="stadium-pitch" />
+            <line x1="400" y1="210" x2="400" y2="390" stroke="#10b981" stroke-width="2" />
+            <circle cx="400" cy="300" r="30" fill="none" stroke="#10b981" stroke-width="2" />
+
+            <!-- Text Labels (toggled on/off) -->
+            <g id="stadium-map-labels">
+              <text x="500" y="150" fill="#fff" font-family="Outfit" font-size="14" font-weight="600" text-anchor="middle">GATE A</text>
+              <text x="610" y="305" fill="#fff" font-family="Outfit" font-size="14" font-weight="600" text-anchor="middle">GATE B</text>
+              <text x="500" y="420" fill="#fff" font-family="Outfit" font-size="14" font-weight="600" text-anchor="middle">GATE C</text>
+              <text x="300" y="420" fill="#fff" font-family="Outfit" font-size="14" font-weight="600" text-anchor="middle">GATE D</text>
+              <text x="300" y="150" fill="#fff" font-family="Outfit" font-size="14" font-weight="600" text-anchor="middle">NORTH CONCOURSE</text>
+              <text x="400" y="305" fill="#a3e635" font-family="Space Grotesk" font-size="11" text-anchor="middle">FIFA PITCH</text>
+            </g>
+          </svg>
+        </div>
+      </section>
+
+      <!-- ================= RIGHT COLUMN: GENAI COPILOT / SMARTPHONE SIMULATOR ================= -->
+      <aside class="panel-card" id="right-panel-area" aria-label="Operations Copilot and Fan View">
+        
+        <!-- Toggle Header for Right Panel: AI Copilot vs Fan Mobile App -->
+        <div class="panel-title" style="border-bottom: 1px solid var(--border-color); margin-bottom: 15px;">
+          <h2 style="font-size: 1.1rem; font-weight: 700;" id="right-panel-title">Operations Copilot</h2>
+          <button class="map-btn" id="right-panel-swap-btn" onclick="swapRightPanel()" style="font-size: 0.75rem; padding: 4px 8px;">Show Fan App</button>
+        </div>
+
+        <div class="panel-body" style="display: flex; flex-direction: column;">
+          
+          <!-- View 1: Generative AI Operations Copilot -->
+          <div class="copilot-panel" id="panel-view-copilot">
+            <div class="chat-history" id="copilot-chat-history" aria-live="polite">
+              <div class="chat-msg bot">
+                <p>Hello Operator, I am your <strong>FIFA 2026 GenAI Co-pilot</strong>. I monitor crowd sensors, security alerts, and sustainability metrics in real time.</p>
+                <p>How can I assist you today? You can choose a quick inquiry below or type a query:</p>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px;">
+                  <button class="map-btn" style="font-size: 0.75rem; padding: 4px 8px;" onclick="sendQuickCopilotQuery('Which gate is most congested?')">Which gate is congested?</button>
+                  <button class="map-btn" style="font-size: 0.75rem; padding: 4px 8px;" onclick="sendQuickCopilotQuery('Predict crowd density for the next hour.')">Predict next hour</button>
+                  <button class="map-btn" style="font-size: 0.75rem; padding: 4px 8px;" onclick="sendQuickCopilotQuery('Generate an evacuation plan.')">Evacuation SOP</button>
+                  <button class="map-btn" style="font-size: 0.75rem; padding: 4px 8px;" onclick="sendQuickCopilotQuery('Summarize today\'s operational issues.')">Summarize Issues</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Input area -->
+            <div class="copilot-input-area">
+              <input type="text" class="copilot-input" id="copilot-text-input" placeholder="Type operations question..." aria-label="AI operations query input" onkeydown="handleCopilotKeyPress(event)">
+              <button class="copilot-send-btn" onclick="submitCopilotQuery()">Send</button>
+            </div>
+          </div>
+
+          <!-- View 2: Fan Mobile App Simulator Container -->
+          <div class="mobile-simulator-container" id="panel-view-fanapp" style="display: none;">
+            <div class="phone-frame" role="figure" aria-label="Smartphone Simulating Fan Application UI">
+              
+              <!-- Phone Status Header -->
+              <div class="phone-header">
+                <span>FIFA Mobile</span>
+                <span id="phone-time-display">08:32 AM</span>
+                <span>5G 🔋</span>
+              </div>
+
+              <!-- Phone Screen Content -->
+              <div class="phone-screen" id="phone-screen-viewport">
+                <!-- Views loaded dynamically: Home, Navigation, Language Translate, Accessibility -->
+              </div>
+
+              <!-- Phone Footer Navigation Bar -->
+              <footer class="phone-footer-nav" role="navigation" aria-label="Mobile app internal navigation">
+                <button class="phone-nav-item active" id="phone-nav-home" onclick="switchPhoneScreen('home')" aria-label="Go to Fan App home screen" style="background:none; border:none;">
+                  🏠 Home
+                </button>
+                <button class="phone-nav-item" id="phone-nav-nav" onclick="switchPhoneScreen('nav')" aria-label="Go to indoor seat-to-seat navigation screen" style="background:none; border:none;">
+                  🗺️ Nav
+                </button>
+                <button class="phone-nav-item" id="phone-nav-lang" onclick="switchPhoneScreen('lang')" aria-label="Go to voice speech translation screen" style="background:none; border:none;">
+                  🗣️ Translate
+                </button>
+                <button class="phone-nav-item" id="phone-nav-access" onclick="switchPhoneScreen('access')" aria-label="Go to accessibility assistance screen" style="background:none; border:none;">
+                  ♿ Access
+                </button>
+              </footer>
+
+            </div>
+          </div>
+
+        </div>
+      </aside>
+
+    </main>
+
+  </div>
+
+  <script src="index.js"></script>
+</body>
+</html>
