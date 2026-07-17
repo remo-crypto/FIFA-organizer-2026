@@ -16,7 +16,7 @@
     <header class="header-bar" role="banner">
       <div class="brand-section">
         <span class="brand-badge" aria-label="Version tag">GENAI v1.0</span>
-        <h1 class="brand-name">FIFA 2026 Smart Stadium Command</h1>
+        <h1 class="brand-name" data-i18n="brand_name">FIFA 2026 Smart Stadium Command</h1>
       </div>
 
       <!-- Navigation Tabs (role="tablist") -->
@@ -24,17 +24,17 @@
         <ul class="nav-tabs" role="tablist">
           <li role="none">
             <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="ops-panel" id="tab-ops" onclick="switchTab('ops')">
-              🛠️ Command Center
+              🛠️ <span data-i18n="tab_ops">Command Center</span>
             </button>
           </li>
           <li role="none">
             <button class="tab-btn" role="tab" aria-selected="false" aria-controls="security-panel" id="tab-security" onclick="switchTab('security')">
-              🛡️ Security HUD
+              🛡️ <span data-i18n="tab_security">Security HUD</span>
             </button>
           </li>
           <li role="none">
             <button class="tab-btn" role="tab" aria-selected="false" aria-controls="transit-panel" id="tab-transit" onclick="switchTab('transit')">
-              🌱 Transit & Sustainability
+              🌱 <span data-i18n="tab_transit">Transit & Sustainability</span>
             </button>
           </li>
         </ul>
@@ -46,7 +46,7 @@
         
         <!-- Accessibility Toggle -->
         <button class="a11y-toggle" id="a11y-toggle-btn" aria-label="Toggle high contrast contrast mode" onclick="toggleAccessibilityContrast()">
-          ♿ Contrast Mode
+          ♿ <span data-i18n="contrast_mode">Contrast Mode</span>
         </button>
 
         <!-- Voice Toggle -->
@@ -69,32 +69,32 @@
       <!-- ================= LEFT COLUMN: STATUS & INCIDENTS ================= -->
       <aside class="panel-card" aria-label="Stadium Telemetry Overview">
         <div class="panel-title">
-          <h2 style="font-size: 1.1rem; font-weight: 700;">Live Telemetry</h2>
+          <h2 style="font-size: 1.1rem; font-weight: 700;" data-i18n="live_telemetry">Live Telemetry</h2>
           <span style="font-size: 0.75rem; color: var(--accent-green);" aria-label="Operational status">● Active</span>
         </div>
         <div class="panel-body">
           <!-- Main Counters -->
           <div class="metric-box">
-            <span>Stadium Attendance</span>
+            <span data-i18n="stadium_attendance">Stadium Attendance</span>
             <div class="metric-val green" id="metric-attendance">64,281</div>
           </div>
           <div class="metric-box">
-            <span>Active Incidents</span>
+            <span data-i18n="active_incidents">Active Incidents</span>
             <div class="metric-val red" id="metric-incidents">2</div>
           </div>
           <div class="metric-box">
-            <span>Avg Queue wait</span>
+            <span data-i18n="avg_queue_wait">Avg Queue wait</span>
             <div class="metric-val amber" id="metric-queue">11m</div>
           </div>
 
           <!-- Dynamic Gate Progress Meters -->
-          <h3 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); margin: 15px 0 8px;">Gate Congestion Metrics</h3>
+          <h3 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); margin: 15px 0 8px;" data-i18n="gate_congestion_metrics">Gate Congestion Metrics</h3>
           <div id="gate-metrics-list">
             <!-- Populated via JS -->
           </div>
 
           <!-- Real-Time Alerts Logs -->
-          <h3 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); margin: 20px 0 8px;">Operational Alerts</h3>
+          <h3 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); margin: 20px 0 8px;" data-i18n="operational_alerts">Operational Alerts</h3>
           <div id="alerts-log-container" aria-live="polite">
             <!-- Alerts injected dynamically -->
           </div>
@@ -165,8 +165,8 @@
         
         <!-- Toggle Header for Right Panel: AI Copilot vs Fan Mobile App -->
         <div class="panel-title" style="border-bottom: 1px solid var(--border-color); margin-bottom: 15px;">
-          <h2 style="font-size: 1.1rem; font-weight: 700;" id="right-panel-title">Operations Copilot</h2>
-          <button class="map-btn" id="right-panel-swap-btn" onclick="swapRightPanel()" style="font-size: 0.75rem; padding: 4px 8px;">Show Fan App</button>
+          <h2 style="font-size: 1.1rem; font-weight: 700;" id="right-panel-title" data-i18n="ops_copilot_title">Operations Copilot</h2>
+          <button class="map-btn" id="right-panel-swap-btn" onclick="swapRightPanel()" style="font-size: 0.75rem; padding: 4px 8px;" data-i18n="show_fan_app">Show Fan App</button>
         </div>
 
         <div class="panel-body" style="display: flex; flex-direction: column;">
@@ -178,18 +178,18 @@
                 <p>Hello Operator, I am your <strong>FIFA 2026 GenAI Co-pilot</strong>. I monitor crowd sensors, security alerts, and sustainability metrics in real time.</p>
                 <p>How can I assist you today? You can choose a quick inquiry below or type a query:</p>
                 <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px;">
-                  <button class="map-btn" style="font-size: 0.75rem; padding: 4px 8px;" onclick="sendQuickCopilotQuery('Which gate is most congested?')">Which gate is congested?</button>
-                  <button class="map-btn" style="font-size: 0.75rem; padding: 4px 8px;" onclick="sendQuickCopilotQuery('Predict crowd density for the next hour.')">Predict next hour</button>
-                  <button class="map-btn" style="font-size: 0.75rem; padding: 4px 8px;" onclick="sendQuickCopilotQuery('Generate an evacuation plan.')">Evacuation SOP</button>
-                  <button class="map-btn" style="font-size: 0.75rem; padding: 4px 8px;" onclick="sendQuickCopilotQuery('Summarize today\'s operational issues.')">Summarize Issues</button>
+                  <button class="map-btn" style="font-size: 0.75rem; padding: 4px 8px;" onclick="sendQuickCopilotQuery('Which gate is most congested?')" data-i18n="quick_congested">Which gate is congested?</button>
+                  <button class="map-btn" style="font-size: 0.75rem; padding: 4px 8px;" onclick="sendQuickCopilotQuery('Predict crowd density for the next hour.')" data-i18n="quick_predict">Predict next hour</button>
+                  <button class="map-btn" style="font-size: 0.75rem; padding: 4px 8px;" onclick="sendQuickCopilotQuery('Generate an evacuation plan.')" data-i18n="quick_evac">Evacuation SOP</button>
+                  <button class="map-btn" style="font-size: 0.75rem; padding: 4px 8px;" onclick="sendQuickCopilotQuery('Summarize today\'s operational issues.')" data-i18n="quick_summarize">Summarize Issues</button>
                 </div>
               </div>
             </div>
 
             <!-- Input area -->
             <div class="copilot-input-area">
-              <input type="text" class="copilot-input" id="copilot-text-input" placeholder="Type operations question..." aria-label="AI operations query input" onkeydown="handleCopilotKeyPress(event)">
-              <button class="copilot-send-btn" onclick="submitCopilotQuery()">Send</button>
+              <input type="text" class="copilot-input" id="copilot-text-input" placeholder="Type operations question..." data-i18n-placeholder="copilot_placeholder" aria-label="AI operations query input" onkeydown="handleCopilotKeyPress(event)">
+              <button class="copilot-send-btn" onclick="submitCopilotQuery()" data-i18n="send_btn">Send</button>
             </div>
           </div>
 
@@ -235,6 +235,15 @@
 
   </div>
 
+  <!-- FR-3.1: non-blocking, screen-reader-friendly notification area used instead of alert() -->
+  <div id="toast-container" class="toast-container" aria-live="assertive" role="status"></div>
+
+  <script>
+    // FR-1.1/NFR-1.3: set this to a backend endpoint that proxies to the LLM provider
+    // (server holds the API key, never the browser). Left unset in this static deployment,
+    // so the app runs on its local, telemetry-grounded fallback templates and says so.
+    window.COPILOT_BACKEND_URL = null;
+  </script>
   <script src="index.js"></script>
 </body>
 </html>

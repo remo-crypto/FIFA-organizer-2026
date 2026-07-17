@@ -108,6 +108,53 @@ try {
   assert.ok(cssContent.includes('--bg-primary: #000000'), 'Contrast mode is not using compliant true black (#000000) base');
   console.log('   -> CSS Contrast mode variables compliant with visual accessibility standard.');
 
+  // Test 6 (NFR-1.6): parseMarkdown must neutralize HTML-significant characters before
+  // formatting, closing the DOM-XSS that previously existed in the copilot chat renderer.
+  console.log('✅ Test 6: Verifying parseMarkdown neutralizes injected HTML/script (XSS regression test)...');
+  const xssPayload = '<img src=x onerror="alert(1)">**bold**';
+  const xssOutput = parseMarkdown(xssPayload);
+  assert.ok(!xssOutput.includes('<img'), 'XSS REGRESSION: raw <img> tag was not escaped by parseMarkdown');
+  assert.ok(xssOutput.includes('&lt;img'), 'Expected escaped &lt;img entity in parseMarkdown output');
+  assert.ok(xssOutput.includes('<strong>bold</strong>'), 'Markdown bold formatting should still work after escaping');
+  console.log('   -> parseMarkdown escapes HTML before formatting; injected markup cannot execute.');
+
+  // Test 7 (FR-2.1): copilot answers must be generated from live telemetryState, not
+  // hardcoded strings that can drift from what the dashboard displays.
+  console.log('✅ Test 7: Verifying copilot responses are grounded in live telemetryState...');
+  assert.ok(
+    /copilotResponses\s*=\s*\{[\s\S]*?"which gate is most congested\?"\s*:\s*\(\)\s*=>/.test(indexJsContent),
+    'copilotResponses entries must be functions computed from live state, not static strings'
+  );
+  assert.ok(!/Gate B\*\* is showing the highest congestion.*24 minutes/.test(indexJsContent),
+    'Found a hardcoded "24 minutes" congestion answer — this can drift from the live simulator');
+  console.log('   -> Congestion/prediction/summary answers are computed, not pre-written.');
+
+  // Test 8 (FR-3.1): native alert() must not be used for in-app notifications; it is
+  // unstyled, blocking, and inconsistent with the rest of the accessible UI.
+  console.log('✅ Test 8: Verifying blocking alert() is not used for app notifications...');
+  const codeOnly = indexJsContent
+    .replace(/\/\*[\s\S]*?\*\//g, '')   // strip block comments
+    .replace(/\/\/.*$/gm, '');          // strip line comments
+  assert.ok(!/\balert\(/.test(codeOnly), 'Found a native alert() call — replace with showToast()');
+  assert.ok(indexJsContent.includes('function showToast('), 'Missing showToast() notification helper');
+  console.log('   -> Notifications use the accessible, non-blocking toast helper.');
+
+  // Test 9 (FR-5.1): translation dictionary must cover the same key set in all three
+  // supported languages, and index.html must reference data-i18n hooks.
+  console.log('✅ Test 9: Verifying multilingual coverage beyond the header...');
+  const htmlContent = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
+  assert.ok((htmlContent.match(/data-i18n="/g) || []).length >= 10,
+    'Expected at least 10 data-i18n hooks in index.html for real multilingual coverage');
+  const translationsMatch = indexJsContent.match(/const translations = \{[\s\S]*?\n\};/);
+  assert.ok(translationsMatch, 'Missing translations dictionary in index.js');
+  const translations = new Function(`${translationsMatch[0]}; return translations;`)();
+  const enKeys = Object.keys(translations.en).sort();
+  ['es', 'fr'].forEach(lang => {
+    const langKeys = Object.keys(translations[lang]).sort();
+    assert.deepStrictEqual(langKeys, enKeys, `Language "${lang}" is missing keys present in "en": ${JSON.stringify(enKeys)}`);
+  });
+  console.log('   -> es/fr translation dictionaries have full key parity with en.');
+
   console.log('\n🎉 ALL TESTS PASSED SUCCESSFULLY! The Smart Stadium Operations Platform is verified.');
 } catch (error) {
   console.error('\n❌ TEST SUITE FAILED!');
