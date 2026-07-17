@@ -12,6 +12,7 @@ let rightPanelMode = 'copilot'; // 'copilot' | 'fanapp'
 let phoneActiveScreen = 'home'; // 'home' | 'nav' | 'lang' | 'access'
 let isHighContrast = false;
 let currentLanguage = 'en';
+let voiceRepliesEnabled = true;
 
 // Telemetry Mock Database
 const telemetryState = {
@@ -973,6 +974,10 @@ function toggleA11yScreenReader() {
 
 // 10. Web Speech accessibility output
 function announceAccessibility(phraseText) {
+  if (!voiceRepliesEnabled) {
+    console.log(`[Voice Replies Disabled] Speech: ${phraseText}`);
+    return;
+  }
   // Use Web Speech Synthesis API if available
   if ('speechSynthesis' in window) {
     window.speechSynthesis.cancel(); // Terminate ongoing speech
